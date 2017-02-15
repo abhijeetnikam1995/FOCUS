@@ -17,10 +17,10 @@ public class RegexGenerate {
         String train_set; //Store first training set in variable to compare it with other training sets char by char
         StringBuilder regex=new StringBuilder();
         String escapeChars="\\$.*+?{}|[]()^";   // Characters that needs to be escaped before generating regex
-        int count=0; // count for keeping count of  training sets
+        int count=0; // counter for keeping count of training sets
 
        
-    private void generateRegex(String[] training_set) // * Works only for two training sets * 
+    private void generateRegex(String[] training_set) 
     {
                 //Scan URL's char by char and Generate Regex
         
@@ -39,7 +39,6 @@ public class RegexGenerate {
 
             if(count==training_set.length) // if char from all traaining sets is same
             {
-               // System.out.println("Hell");
                     if(escapeChars.contains(String.valueOf(train_set.charAt(i)))){  //Escape chars 
                         regex.append("\\"+train_set.charAt(i));  // Escape the char
                         continue;
@@ -49,19 +48,13 @@ public class RegexGenerate {
                         regex.append("\\d");
                         continue;
                     }
-                    //System.out.println("Matched "+train_set.charAt(j));
                     regex.append(train_set.charAt(i));
             
             }
 
             else
             {
-                  //System.out.println("Bell");
-
-               // if("1234567890".contains(String.valueOf(train_set.charAt(i))))   // digits regex keyword [probably to avoid bugs]
-                 //       regex.append("\\d");
-                //else
-                    regex.append(".");
+                    regex.append("."); // regex keyword to match any character
             }
             
         }
@@ -81,7 +74,7 @@ public class RegexGenerate {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String[] arr={"thread.php?thread_id=12l1","thread.php?thread_id=2233","thraad.php?thread_id=2333"}; //only two training sets should be provided & length should be same for both tarinig sets
+        String[] arr={"thread.php?thread_id=12l1","thread.php?thread_id=2233","thraad.php?thread_id=2333"}; // Sample training sets
         new RegexGenerate(arr);
         
     }
