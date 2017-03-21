@@ -79,7 +79,10 @@ public class Entry_URLDiscovery {
         host = user_url.substring(slashslash, user_url.indexOf('/', slashslash)); // SO,  Extract hostname from given URL
         this.host=host;
         System.out.println("Host : "+host); 
-
+        
+        if(user_url.endsWith("/")){     // to remove ending slash to avoid 404
+            user_url=user_url.substring(0,user_url.length()-1);
+        }
         Document doc = Jsoup.connect(user_url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
      .followRedirects(true).timeout(300000).get();
         
