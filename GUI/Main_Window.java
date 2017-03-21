@@ -28,7 +28,6 @@ public class Main_Window extends Application {
       Button crawl = new Button("Search");
       TextArea progress_text=new TextArea();
       ProgressIndicator progress=new ProgressIndicator();
-      //Instantiating the HBox class
       
       progress_text.setPrefColumnCount(50);    //Width
       progress_text.setPrefRowCount(50);       //Height
