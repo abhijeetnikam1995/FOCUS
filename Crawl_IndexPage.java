@@ -59,6 +59,11 @@ public class Crawl_IndexPage { // Crawls Index Pages
                 if(str1.startsWith("/")){   //remove first slash if there is any bcz regex does not expect slash at begining
                     str1=str1.substring(1,str1.length());
                 }
+                
+                 if(str1.endsWith("/")){   //remove last slash if there is any bcz websites behavior changes
+                    str1=str1.substring(0,str1.length()-1);
+                }
+                
                 if(filter.isIndexURL(str1))
                 {
                     
