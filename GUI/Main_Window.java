@@ -1,25 +1,30 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 package focus;
 
-import javafx.application.Application;
-import javafx.collections.ObservableList;
+ import javafx.application.Application;import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+ import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+ import javafx.stage.Stage;
 
 
-/**
+/*
  *
  * @author rakesh
  */
- 
-public class Main_Window extends Application {
+
+public class MainWindow extends Application {
     
     @Override
     public void start(Stage stage) {
@@ -27,6 +32,9 @@ public class Main_Window extends Application {
       TextArea keywords = new TextArea();
       Button crawl = new Button("Search");
       TextArea progress_text=new TextArea();
+      Label label = new Label("Enter Keywords");
+
+      
       ProgressIndicator progress=new ProgressIndicator();
       
       progress_text.setPrefColumnCount(50);    //Width
@@ -47,12 +55,14 @@ public class Main_Window extends Application {
       horizontal_layout.setMargin(progress_text, new Insets(20, 20, 20, 20));
       
       ObservableList list_v=vertical_layout.getChildren();
-      list_v.addAll(keywords,crawl,progress);
+      list_v.addAll(label,keywords,crawl,progress);
       
       ObservableList list_h = horizontal_layout.getChildren();
       list_h.addAll(vertical_layout,progress_text);
       
-      Scene scene = new Scene(horizontal_layout);
+      Scene scene = new Scene(horizontal_layout,1000,1000);
+      
+      
       
       //Setting title to the Stage
       stage.setTitle("Main Window");
