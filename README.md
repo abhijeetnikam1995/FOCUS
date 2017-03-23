@@ -1,7 +1,4 @@
-# Forum Crawler Project Modules
+# Forum Crawler Using SVM
 
-1) FOCUS.java - Main moudule of project that combines all modules 
-
-2) EntryURLDiscovery.java - Discovers entry URL of the forum
-
-3) RegexGenerator - Generates regular expressions from given training sets
+This project is work in progres and not yet completed.
+This is an implementation of IEEE paper (http://ieeexplore.ieee.org/document/6165295/) with some improvements. 
