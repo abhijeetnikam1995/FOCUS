@@ -24,6 +24,9 @@ public class Regex_Generate {
     {
                 //Scan URL's char by char and Generate Regex
         
+        regex.append("^(/)?");// start of regex & 0 or 1 occurance of "/" at the beginning
+
+        
         for(int i=0;i<training_set[0].length();i++)  //loop all characters
         {   
             count=0; //reset counter
@@ -39,13 +42,24 @@ public class Regex_Generate {
 
             if(count==training_set.length) // if char from all traaining sets is same
             {
+                    
+                    if("?".contains(String.valueOf(train_set.charAt(i)))){  //to handle unexpected/dynamic paramters in URL
+                        regex.append("?(.)*");
+                        continue;
+                    }
+                    
+                    if("&".contains(String.valueOf(train_set.charAt(i)))){  //to handle unexpected/dynamic paramters in URL
+                        regex.append("(.)*");
+                        //continue;             // No continue because we want to add '&' also in below steps
+                    }
+                
                     if(escapeChars.contains(String.valueOf(train_set.charAt(i)))){  //Escape chars 
                         regex.append("\\"+train_set.charAt(i));  // Escape the char
                         continue;
                         
                     }
                     else if("1234567890".contains(String.valueOf(train_set.charAt(i)))) {  // digits regex keyword [probably to avoid bugs]
-                        regex.append("(\\d)*");   //bcz there can size of number can vary (id=0,id=11,id=100,etc)
+                        regex.append("(\\d)*");   //bcz size of number can vary (id=0,id=11,id=100,etc)
                         continue;
                     }
                     else if("&".matches(String.valueOf(train_set.charAt(i)))){
@@ -63,6 +77,10 @@ public class Regex_Generate {
             }
             
         }
+        
+        
+        regex.append("([^#])*$"); // to handle ending unexpected parameters and to avoid matching # values
+        
         return regex.toString();
         
     }

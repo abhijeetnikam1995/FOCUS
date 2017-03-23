@@ -65,7 +65,7 @@ public class Filter {
                 Matcher m = r.matcher(url);
                 if(m.matches())
                 {
-                    //System.out.println("Matched"+url);
+                    System.out.println("Matched"+url);
                     temp_url.add(url);
                 }
       
@@ -90,7 +90,7 @@ public class Filter {
                 Matcher m = r.matcher(url);
                 if(m.matches())
                 {
-                    //System.out.println("Matched"+url);
+                    System.out.println("Matched"+url);
                     temp_url.add(url);
                 }
       

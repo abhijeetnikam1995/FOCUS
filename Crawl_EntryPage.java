@@ -24,16 +24,21 @@ public class Crawl_EntryPage {
         this.url=url;
     }
     
-    public ArrayList<String> crawl_page()
+    public ArrayList<String> crawl_page() throws IOException
     {
         Entry_URLDiscovery obj=new Entry_URLDiscovery(url);
+        //System.out.println("db:"+obj.redirectedUrl);
+        //url=obj.redirectedUrl;  // set redirected URL 
         try {
             ArrayList<String> str=obj.get_url_paths(url);
             //ListIterator li =str.listIterator();
+            System.out.println("DB:"+url);
+            System.out.println("DB:"+str.toString());
+
             for(int j=0;j<str.size();j++){
                 String i=str.get(j);
                 //li.next();
-                //System.out.println("**** "+str.size());
+                System.out.println(i);
                 //System.exit(1);
                 if(i.length()>1) // Get rid of only 1 char elements and first slash from paths
                 {

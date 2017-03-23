@@ -17,10 +17,12 @@ import org.jsoup.select.Elements;
 public class Entry_URLDiscovery {
     String url,host,schema;
     ArrayList<String> external_urls=new ArrayList<>();
-    public Entry_URLDiscovery(String url){
+    String redirectedUrl; //to store destination url after redirection
+    
+    public Entry_URLDiscovery(String url) throws IOException{
         if(StringUtils.countMatches(url, "/")>3) //if given url contains path then remove it
             url=url.substring(0, StringUtils.ordinalIndexOf(url, "/", 3));
-        
+        //redirectedUrl = Jsoup.connect(url).followRedirects(true).execute().url().toExternalForm(); //StackOverflow , To get destination URL after redirect
         this.url=url;
         schema=url.substring(0,url.indexOf("/")+2); //http or https ??
             }
@@ -59,6 +61,8 @@ public class Entry_URLDiscovery {
     }
     
     
+ 
+    
     public ArrayList<String> get_url_paths(String url) throws IOException
     {
         System.setProperty("http.proxyHost", "127.0.0.1"); //for debugging purpose
@@ -83,8 +87,18 @@ public class Entry_URLDiscovery {
         if(user_url.endsWith("/")){     // to remove ending slash to avoid 404
             user_url=user_url.substring(0,user_url.length()-1);
         }
+        
+        System.out.println("Debug EUD :"+user_url);
+        
         Document doc = Jsoup.connect(user_url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
-     .followRedirects(true).timeout(300000).get();
+     .followRedirects(true).timeout(30000).get();
+        
+        //redirectedUrl = Jsoup.connect(user_url).followRedirects(true).timeout(300000).execute().url().toExternalForm(); //StackOverflow , To get destination URL after redirect
+        
+        
+        
+       // System.out.println(redirectedUrl);
+        
         
         String redirect_url=null; //to store URL of HTML redirects
         Elements meta = doc.select("html head meta");
@@ -94,7 +108,7 @@ public class Entry_URLDiscovery {
             redirect_url=redirect_url.replace("'", ""); // remove ' from URL
             redirect_url=redirect_url.replace("\"", ""); // remove " from URL
             String new_url=schema+host+redirect_url;
-            doc = Jsoup.connect(new_url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
+            doc = Jsoup.connect(new_url).cookie("test","test").userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
      .followRedirects(true).timeout(300000).get();
         }
         
@@ -102,6 +116,7 @@ public class Entry_URLDiscovery {
         
  
         Elements links = doc.select("a[href]"); // a with href
+        System.out.println(links.text());
         for(int i=0;i<links.size();i++) //extracting, filtering and storing links in array
         {
             if(links.get(i).absUrl("href").contains("https://"+host) | links.get(i).absUrl("href").contains("http://"+host)|links.get(i).absUrl("href").contains("https://"+"www."+host) | links.get(i).absUrl("href").contains("http://"+"www."+host)) // www cz sometimes URL's in pages starts with www and we might miss them as external links
@@ -139,13 +154,31 @@ public class Entry_URLDiscovery {
     
     public String baseline_url(ArrayList<String> url_paths)
     {
+                 //url_paths.get(i).endsWith("/forum")|url_paths.get(i).endsWith("/forum/")|url_paths.get(i).endsWith("/board")|url_paths.get(i).endsWith("/bbs")|url_paths.get(i).endsWith("/community")|url_paths.get(i).endsWith("/discus")|url_paths.get(i).endsWith("/board/")|url_paths.get(i).endsWith("/bbs/")|url_paths.get(i).endsWith("/community/")|url_paths.get(i).endsWith("/discus/"))
+        String[] baselinearray={"/forums/index.php","/forums","/forums/","/board","/board/","/bbs","/bbs/","/community","/community/","/discus","/discus/","/board","/board/"};
+        
         String baseline_matched_paths="NOT_FOUND";
         for(int i=0;i<url_paths.size();i++)
         {
-            if(url_paths.get(i).endsWith("/forums")|url_paths.get(i).endsWith("/forums/")|url_paths.get(i).endsWith("/forum")|url_paths.get(i).endsWith("/forum/")|url_paths.get(i).endsWith("/board")|url_paths.get(i).endsWith("/bbs")|url_paths.get(i).endsWith("/community")|url_paths.get(i).endsWith("/discus")|url_paths.get(i).endsWith("/board/")|url_paths.get(i).endsWith("/bbs/")|url_paths.get(i).endsWith("/community/")|url_paths.get(i).endsWith("/discus/"))
+         /*   if(url_paths.get(i).endsWith("/forums/index.php")|url_paths.get(i).endsWith("/forums")|url_paths.get(i).endsWith("/forums/")|url_paths.get(i).endsWith("/forum")|url_paths.get(i).endsWith("/forum/")|url_paths.get(i).endsWith("/board")|url_paths.get(i).endsWith("/bbs")|url_paths.get(i).endsWith("/community")|url_paths.get(i).endsWith("/discus")|url_paths.get(i).endsWith("/board/")|url_paths.get(i).endsWith("/bbs/")|url_paths.get(i).endsWith("/community/")|url_paths.get(i).endsWith("/discus/"))
             {
                 baseline_matched_paths=url_paths.get(i);
             }
+          */
+            String url=url_paths.get(i);
+            for(String baseline:baselinearray)
+            {
+                if(url.endsWith(baseline)){
+                    if(url.contains(".")){
+                                                System.out.println("007:"+url);
+
+                        url=url.substring(0,StringUtils.ordinalIndexOf(url, "/", 2));
+                    }
+                    baseline_matched_paths=url;
+                }
+            }
+            
+            
         }
         return baseline_matched_paths;
     }

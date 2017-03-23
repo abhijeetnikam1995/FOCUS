@@ -18,7 +18,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
     ArrayList<String> index_urls,thread_urls;
     String i_regex,t_regex,url;
     JTextArea text_area;
-    
+    String exclude_parameters[]={";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
     public Crawl_IndexPage(JTextArea text_area,String url,ArrayList<String> index_urls,ArrayList<String> thread_urls,String i_regex,String t_regex)
     {
         this.index_urls=index_urls;
@@ -60,13 +60,24 @@ public class Crawl_IndexPage { // Crawls Index Pages
                     str1=str1.substring(1,str1.length());
                 }
                 
-                 if(str1.endsWith("/")){   //remove last slash if there is any bcz websites behavior changes
+                if(str1.endsWith("/")){   //remove last slash if there is any bcz websites behavior changes
                     str1=str1.substring(0,str1.length()-1);
+                }
+                
+                for(String exclude : exclude_parameters)    //check if the url contains excluded strings
+                {
+                    if(str1.contains(exclude)){
+                        str1="";
+                    }
+                }
+                
+                if(str1.equals("")){ //if url contains excluded string then continue to next iteration
+                    continue;
                 }
                 
                 if(filter.isIndexURL(str1))
                 {
-                    
+   
                     if(!index_urls.contains(str1))  //to avoid duplicates
                     {                    
                         text_area.append("\nAdding Index URL >> "+str1);
