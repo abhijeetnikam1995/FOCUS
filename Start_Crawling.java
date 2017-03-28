@@ -6,8 +6,10 @@
 package focus;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JTextArea;
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -16,52 +18,48 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Start_Crawling {
     
-    JTextArea text_area;
+    TextArea text_area;
    
-    public void start(JTextArea jtf) throws IOException{
+    public void start(TextArea jtf) throws IOException, ClassNotFoundException, SQLException{
         
-        text_area=jtf; //TextFieldArea object to update progress
+        text_area=jtf; 
         String entry_url,host;
         String tp_regex,ip_regex,turl,iurl;
         ArrayList<String> entry_page_urls,index_urls,thread_urls;
-
-        ///*--------------
         
-        //Find Entry URL
 
         
-        host="http://forum.ucweb.com/";   //HOST
-        turl="forum.ucweb.com/forum.php?mod=viewthread&tid=1134508&extra=page%3D1";   //ThreadURL without schema
-        iurl="forum.ucweb.com/forum.php?mod=forumdisplay&fid=104";      //IndexURL without shema
+        //host="https://community.mybb.com";   //HOST
+        //turl="community.mybb.com/thread-209344.html";   //ThreadURL without schema
+        //iurl="community.mybb.com/forum-176.html";      //IndexURL without shema
         
+        host="http://forum.ucweb.com";
+        turl="forum.ucweb.com/forum.php?mod=viewthread&tid=1137449&extra=page%3D1";
+        iurl="forum.ucweb.com/forum.php?mod=forumdisplay&fid=104";
+       
         
         //Note : Do not add slash in the host URL
-        System.out.println("1. Host > "+host);
-        
-        Entry_URLDiscovery entry_url_obj=new Entry_URLDiscovery(host);
-        entry_url=entry_url_obj.get_entry_url();
-        //entry_url=entry_url_obj.redirectedUrl;
-        text_area.append("\nPossible Entry URL : "+entry_url);
-        
-        System.out.println("2. Entry Url > "+entry_url);
+        //Note : regex only matches the path not the complete URL
 
+        System.out.println("\n Host > "+host);
         
-        //---------------*/
-        
-        ///*--------------
-        //Generate Regex For Thread Pages
+        Platform.runLater(() ->text_area.appendText("\nHost > "+host));
+
+
         //url="forum.ucweb.com/forum.php?mod=viewthread&tid=1103035&extra=page%3D1";
         //url="forum.statcounter.com/vb/showthread.php?t=35854";//www.discogs.com/forum/thread/403125";
-        System.out.println("3. Thread URL > "+turl);
-
         
-        //Note : regex only matches the path not the complete URL
+        System.out.println("\n Thread URL > "+turl);
+        
+        final String turl_final=turl;
+        Platform.runLater(() ->text_area.appendText("\n\nThread URL > "+turl_final));
+        
         turl=turl.substring(turl.indexOf("/")+1, turl.length());
         String[] str={turl}; //convert url string to string array
         //generate regex
         Regex_Generate rj=new Regex_Generate(str);
         tp_regex=rj.generateRegex(str); // get the regex
-        text_area.append("\nThread Page Regex : "+tp_regex);
+        Platform.runLater(() ->text_area.appendText("\nGenerated Thread Page Regex > "+tp_regex));
         
         System.out.println("4. Thread Regex > "+tp_regex);
 
@@ -73,14 +71,16 @@ public class Start_Crawling {
         //url="forum.statcounter.com/vb/forumdisplay.php?f=47";//www.discogs.com/forum/topic/17";
         System.out.println("5. Index URL > "+iurl);
 
-        
+        final String iurl_final=iurl;  
+        Platform.runLater(() ->text_area.appendText("\n\nIndex URL > "+iurl_final));
+         
         //Note : regex only matches the path not the complete URL
         iurl=iurl.substring(iurl.indexOf("/")+1, iurl.length());
         String str1[]={iurl}; //convert url string to string array
         //generate regex
         rj=new Regex_Generate(str1);
         ip_regex=rj.generateRegex(str1); // get the regex
-        text_area.append("\nIndex Page Regex : "+ip_regex);
+        Platform.runLater(() ->text_area.appendText("\nGenerated Index Page Regex > "+ip_regex));
         
         System.out.println("6. Index Regex > "+ip_regex);
 
@@ -89,51 +89,56 @@ public class Start_Crawling {
         Filter filter_obj=new Filter(ip_regex,tp_regex); //pass regex to filter class
         
         
-        /*---------------*/
         
-        //Crawling Entry Page
+        Entry_URLDiscovery entry_url_obj=new Entry_URLDiscovery(host,filter_obj);
+        entry_url=entry_url_obj.get_entry_url();
+        //entry_url=entry_url_obj.redirectedUrl;
+        //text_area.sett Platform.runLater(() -> text_area.appendText());
+        //Platform.runLater(() -> text_area.appendText("\nPossible Entry URL : "+entry_url));
         
+        System.out.println("2. Entry Url > "+entry_url);
         
-        Crawl_EntryPage x=new Crawl_EntryPage(entry_url);//http://forum.ucweb.com"); //Get Links (Paths Only) From Entry Page
-        
-        
-        
-        
+        Platform.runLater(() ->text_area.appendText("\n\nEntry URL Found > "+entry_url));
+         
+        Crawl_EntryPage x=new Crawl_EntryPage(entry_url,filter_obj);//http://forum.ucweb.com"); //Get Links (Paths Only) From Entry Page
+
         entry_page_urls=x.crawl_page();
-        //System.out.println(">>>"+x.crawl_page().toString());
-        
-        //---------------------
+
         //Filter URL's
 
         index_urls=filter_obj.filterIndexURL(entry_page_urls);
         thread_urls=filter_obj.filterThreadURL(entry_page_urls);
         
-        text_area.append("\nIndex URLS :"+index_urls.size()+index_urls.toString());
+        Platform.runLater(() -> text_area.appendText("\n\nIndex URLS From Entry Page >"+index_urls.size()+index_urls.toString()+"\n"));
         
         System.out.println("7. Index URLS From Entry Page > "+index_urls.toString());
 
         
-        text_area.append("\nThread URLS : "+thread_urls.size()+thread_urls.toString());
+        Platform.runLater(() -> text_area.appendText("\n\nThread URLS From Entry Page > "+thread_urls.size()+thread_urls.toString()+"\n"));
 
         System.out.println("8. Thread URLS From Entry Page > "+thread_urls.toString());
 
         //---------------*/
         String entry_url_host=entry_url;
+        
         //Crawling sub index pages
         if(StringUtils.countMatches(entry_url, "/")>2){ // remove baseline added while entry url generation phase 
                     entry_url_host=entry_url.substring(0,StringUtils.ordinalIndexOf(entry_url, "/", 3));
         }
         
+        Platform.runLater(() -> text_area.appendText("\n\nStarting Crawling\n************************************************************"));
+        
         //System.out.println
-        Crawl_IndexPage crawli=new Crawl_IndexPage(text_area,entry_url_host,index_urls,thread_urls,ip_regex,tp_regex);
+        Crawl_IndexPage crawli=new Crawl_IndexPage(filter_obj,text_area,entry_url_host,index_urls,thread_urls,ip_regex,tp_regex);
         crawli.crawl();
-        for(String str0:crawli.getIndexURLArray()){
-            text_area.append("\n**INDEX**"+crawli.getIndexURLArray().size()+str0);
+        /*for(String str0:crawli.getIndexURLArray()){
+            Platform.runLater(() ->text_area.appendText("\n**INDEX**"+crawli.getIndexURLArray().size()+str0));
         }
         
         for(String str0:crawli.getThreadURLArray()){
-            text_area.append("\n**Thread**"+crawli.getThreadURLArray().size()+str0);
+            Platform.runLater(() ->text_area.appendText("\n**Thread**"+crawli.getThreadURLArray().size()+str0));
         }
+        */
         
         
     }

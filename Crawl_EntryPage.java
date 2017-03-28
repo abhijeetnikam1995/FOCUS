@@ -6,6 +6,7 @@
 package focus;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -18,48 +19,50 @@ import java.util.logging.Logger;
 public class Crawl_EntryPage {
     
     String url;
+    Filter filter;
     
-    public Crawl_EntryPage(String url)
+    public Crawl_EntryPage(String url,Filter f)
     {
         this.url=url;
+        filter=f;
     }
     
-    public ArrayList<String> crawl_page() throws IOException
+    public ArrayList<String> crawl_page() throws IOException, ClassNotFoundException, SQLException
     {
-        Entry_URLDiscovery obj=new Entry_URLDiscovery(url);
-        //System.out.println("db:"+obj.redirectedUrl);
-        //url=obj.redirectedUrl;  // set redirected URL 
-        try {
-            ArrayList<String> str=obj.get_url_paths(url);
-            //ListIterator li =str.listIterator();
-            System.out.println("DB:"+url);
-            System.out.println("DB:"+str.toString());
-
-            for(int j=0;j<str.size();j++){
-                String i=str.get(j);
-                //li.next();
-                System.out.println(i);
-                //System.exit(1);
-                if(i.length()>1) // Get rid of only 1 char elements and first slash from paths
-                {
-                    i=i.substring(1,i.length());
-                    str.set(j, i); 
+        
+            Entry_URLDiscovery obj=new Entry_URLDiscovery(url,filter);
+            try {
+                ArrayList<String> str=obj.get_url_paths(url);
+                
+                
+                for(int j=0;j<str.size();j++){
+                    String i=str.get(j);
+                    System.out.println(i);
+                    if(i.length()>1) // Get rid of only 1 char elements and first slash from paths
+                    { 
+                        i=i.substring(1,i.length());
+                        str.set(j, i);
+                    }
+                    else
+                    {
+                        str.set(j,"");  //nullifying 1 char elements
+                    }
                 }
-                else
-                {
-                    str.set(j,"");  //nullifying 1 char elements
-                }
+                str.removeAll(Arrays.asList("", null)); // removing 1 chars elements [SO]
+                
+                return str;
+                
+            } catch (IOException | SQLException ex) {
+                Logger.getLogger(Crawl_EntryPage.class.getName()).log(Level.SEVERE, null, ex);
             }
-            str.removeAll(Arrays.asList("", null)); // removing 1 chars elements [SO]
+  
             
-            return str;
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Crawl_EntryPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+            return null;
+
+    
     }
+}
     
   
     
-}
+
