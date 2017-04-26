@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +27,7 @@ public class Entry_URLDiscovery {
     static ArrayList<String> allurllist=new ArrayList<>();
     static ArrayList<String> allquestionlist=new ArrayList<>();
     String[] divs={"t_fsz","post_body","inner","postmsg"};
-
+    TextArea text_area;
     
     Filter filter;
     String url,host,schema,index_text,thread_text;
@@ -37,7 +38,9 @@ public class Entry_URLDiscovery {
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
 
     
-    public Entry_URLDiscovery(String url,Filter filter) throws IOException,ClassNotFoundException, SQLException{
+    public Entry_URLDiscovery(TextArea text_area,String url,Filter filter) throws IOException,ClassNotFoundException, SQLException{
+        
+        this.text_area=text_area;
         
         Class.forName("com.mysql.jdbc.Driver");  
         con=DriverManager.getConnection("jdbc:mysql://localhost:3306/crawler","root",""); 
@@ -104,7 +107,7 @@ public class Entry_URLDiscovery {
         String host;
         String urlwithhost="",urlwithouthost="";
         
-        //URL should end with "/" for below codes to run hence
+        //URL should end with "/" for below codes to run 
         
         if(!user_url.endsWith("/")&&!(user_url.contains("&")))
         {
@@ -163,6 +166,7 @@ public class Entry_URLDiscovery {
             }
             
             //Remove ' to avoid SQL errors 
+            
             if(links.get(i).text().contains("'")){ 
                 links.get(i).text(links.get(i).text().replaceAll("'", "\""));
             }
@@ -189,6 +193,8 @@ public class Entry_URLDiscovery {
                 {
                     
                     System.out.println("\n Got a thread URL > "+urlwithouthost);
+                    final String tmpurlwithouthost=urlwithouthost;
+                    Platform.runLater(() ->text_area.appendText("\nFound a thread URL : "+tmpurlwithouthost));
 
                     
                     //Start new thread to obtain the answer then add it in below query
@@ -219,39 +225,28 @@ public class Entry_URLDiscovery {
                                     
                                  //Adding Content Of Answer
                                  
+                                String content="",tmp="";
+
+                                    while(true){
+                                    
                                      Document doc1 = Jsoup.connect(urlwithhost).cookie("test","test").userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
      .followRedirects(true).timeout(300000).get();
-                                     String content="";
-            
-                                     Elements content_body=null;
-            
-                                     for(String str: divs){
-                                           
-                                         System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
-
-                                           if(doc1.body().html().contains("<div class=\""+str))
-                                                {
-                                                    //System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
-                                                    content_body= doc1.select("div."+str);
-                                                    
-                                                    //break;  //get out of for loop
-                                                    
-                                                    for(Element e:content_body)
-                                                        {
-                                                            content=content+e.text()+"\n\n";
-                                                         }
-                                                    
-                                                    break;
-                                                }
-            
-                                                }
                                      
+                                     if(!doc1.html().contains("class=\"nxt\">Next</a>")) //When no more flipping URL's are found
+                                         break;
+                                     content=content+"\nNEXT PAGE CONTENTS\n"+contentExtract(doc1,urlwithhost);   
+                                     tmp=doc1.select("a.nxt").first().attr("abs:href");
+                                     System.out.println("Next Page URL : "+tmp);
+                                     urlwithhost=tmp;
+                                     
+                                    }
+                                    
                                      //SQLi ?
                                      
                                       if(content.contains("'"))
                                          content=content.replaceAll("'", "\"");
                                      
-            
+                                    
 
              
                                      query="update records set answer='"+content+"' where id="+id+";";   
@@ -264,7 +259,6 @@ public class Entry_URLDiscovery {
                            }
                         else
                              System.out.println("Failed"); 
-                             //id=id+1;
                     
                         }
                         
@@ -282,6 +276,29 @@ public class Entry_URLDiscovery {
         }
 
         return extracted_urls_path;
+    }
+    
+    
+    public String contentExtract(Document doc,String urlwithhost){
+            Elements content_body=null;
+            String content="";
+                    for(String str: divs){
+                                         
+                        System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
+
+                                           if(doc.body().html().contains("<div class=\""+str))
+                                                {
+                                                    content_body= doc.select("div."+str);
+                                                    for(Element e:content_body)
+                                                        {
+                                                            content=content+e.text()+"\n\n";
+                                                         }
+                                                    
+                                                    break;
+                                                }
+            
+                                            }
+                    return content;
     }
     
     public String baseline_url(ArrayList<String> url_paths)
