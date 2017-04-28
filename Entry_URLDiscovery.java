@@ -26,7 +26,9 @@ public class Entry_URLDiscovery {
     static int id=1;
     static ArrayList<String> allurllist=new ArrayList<>();
     static ArrayList<String> allquestionlist=new ArrayList<>();
-    String[] divs={"t_fsz","post_body","inner","postmsg"};
+    String[] divs={"t_fsz","post_body","inner","postmsg","postbody"};
+    String[] flipping_class={"nxt","pagination_next"};
+    String[] flipping_sign={"\">Next</a></b></td>","\">Next</a></p>"};
     TextArea text_area;
     
     Filter filter;
@@ -34,6 +36,7 @@ public class Entry_URLDiscovery {
     ArrayList<String> external_urls=new ArrayList<>();
     String redirectedUrl; //to store destination url after redirection
     Connection con;
+    static String entry_url;
     Statement DB = null;
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
 
@@ -71,7 +74,7 @@ public class Entry_URLDiscovery {
                     matched_baseline="";
            }
            
-           String entry_url=schema+host+matched_baseline;
+           entry_url=schema+host+matched_baseline;
            return entry_url;
     }
     
@@ -226,18 +229,72 @@ public class Entry_URLDiscovery {
                                  //Adding Content Of Answer
                                  
                                 String content="",tmp="";
-
-                                    while(true){
-                                    
+                                int flag=0;
+                                int z=0;
+                                    while(z<2){ // Add contents from all flipping pages
+                                    z=z+1; // Only fetch 2 pages
                                      Document doc1 = Jsoup.connect(urlwithhost).cookie("test","test").userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
      .followRedirects(true).timeout(300000).get();
                                      
-                                     if(!doc1.html().contains("class=\"nxt\">Next</a>")) //When no more flipping URL's are found
+                                     flag=0; //reset the flag for each page
+                                     
+                                    content=content+"\nNEXT PAGE CONTENTS\n"+contentExtract(doc1,urlwithhost);   
+
+                                     /*
+                                    
+                                    if(!doc1.html().contains("class=\"nxt\">Next</a>")) //When no more flipping URL's are found
                                          break;
-                                     content=content+"\nNEXT PAGE CONTENTS\n"+contentExtract(doc1,urlwithhost);   
-                                     tmp=doc1.select("a.nxt").first().attr("abs:href");
+                                     */
+                                     
+                                     for(String next_class:flipping_class)  // Check if next page is available
+                                     {
+                                        if(doc1.html().contains("class=\""+next_class+"\">Next")) //When no more flipping URL's are found
+                                        {
+                                            System.out.println("Matched Class : "+next_class);
+                                            flag=1;
+                                            tmp=doc1.select("a."+next_class).first().attr("abs:href"); //Assign flipping URL to variable
+
+                                        }
+                                     }
+                                     
+                                     if(flag==0){
+                                     
+                                    for(String next_class:flipping_sign)    // Check if next page is available
+                                     {
+                                        if(doc1.html().contains(next_class)) //When no more flipping URL's are found
+                                        {                                            
+                                            System.out.println("Matched Class : "+next_class);
+                                            flag=1;
+                                            tmp=doc1.html().substring(0, doc1.html().lastIndexOf(next_class)+2); // divide from begining to matched sign
+                                            //System.out.println(tmp);
+                                            tmp=tmp.substring(tmp.lastIndexOf("href=")+6,tmp.lastIndexOf("\">")); ////Assign flipping URL to variable
+                                            //tmp=doc1.select("a."+next_class).first().attr("abs:href"); 
+                                            System.out.println(tmp);
+
+                                        }
+                                        
+                                     }
+                                     
+                                     }
+
+                                                                          
+                                     if(flag==0){   // when no more flipping pages found break out of the loop
+                                        break;
+                                     }
+
+                                     if(!tmp.contains("http://")|!tmp.contains("https://")){ //When links does not include host
+                                         
+                                         tmp=entry_url+"/"+tmp;
+                                         
+                                     }
+                                     
+                                     System.out.println("URL : "+urlwithhost);  
+                                     System.out.println("Flag : "+flag);
+                                     
                                      System.out.println("Next Page URL : "+tmp);
                                      urlwithhost=tmp;
+                                     
+                                     
                                      
                                     }
                                     
@@ -278,13 +335,12 @@ public class Entry_URLDiscovery {
         return extracted_urls_path;
     }
     
-    
     public String contentExtract(Document doc,String urlwithhost){
             Elements content_body=null;
             String content="";
                     for(String str: divs){
                                          
-                        System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
+                       // System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
 
                                            if(doc.body().html().contains("<div class=\""+str))
                                                 {
@@ -303,7 +359,6 @@ public class Entry_URLDiscovery {
     
     public String baseline_url(ArrayList<String> url_paths)
     {
-                 //url_paths.get(i).endsWith("/forum")|url_paths.get(i).endsWith("/forum/")|url_paths.get(i).endsWith("/board")|url_paths.get(i).endsWith("/bbs")|url_paths.get(i).endsWith("/community")|url_paths.get(i).endsWith("/discus")|url_paths.get(i).endsWith("/board/")|url_paths.get(i).endsWith("/bbs/")|url_paths.get(i).endsWith("/community/")|url_paths.get(i).endsWith("/discus/"))
         String[] baselinearray={"/forums/index.php","/forums","/forums/","/board","/board/","/bbs","/bbs/","/community","/community/","/discus","/discus/","/board","/board/"};
         
         String baseline_matched_paths="NOT_FOUND";
