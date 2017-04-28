@@ -34,7 +34,7 @@ public class Entry_URLDiscovery {
     Filter filter;
     String url,host,schema,index_text,thread_text;
     ArrayList<String> external_urls=new ArrayList<>();
-    String redirectedUrl; //to store destination url after redirection
+    String redirectedUrl; //To store destination url after redirection
     Connection con;
     static String entry_url;
     Statement DB = null;
