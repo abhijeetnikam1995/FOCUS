@@ -34,7 +34,7 @@ public class Entry_URLDiscovery {
     Filter filter;
     String url,host,schema,index_text,thread_text;
     ArrayList<String> external_urls=new ArrayList<>();
-    String redirectedUrl; //To store destination url after redirection
+    String redirectedUrl; //to store destination url after redirection
     Connection con;
     static String entry_url;
     Statement DB = null;
@@ -359,6 +359,7 @@ public class Entry_URLDiscovery {
     
     public String baseline_url(ArrayList<String> url_paths)
     {
+                 //url_paths.get(i).endsWith("/forum")|url_paths.get(i).endsWith("/forum/")|url_paths.get(i).endsWith("/board")|url_paths.get(i).endsWith("/bbs")|url_paths.get(i).endsWith("/community")|url_paths.get(i).endsWith("/discus")|url_paths.get(i).endsWith("/board/")|url_paths.get(i).endsWith("/bbs/")|url_paths.get(i).endsWith("/community/")|url_paths.get(i).endsWith("/discus/"))
         String[] baselinearray={"/forums/index.php","/forums","/forums/","/board","/board/","/bbs","/bbs/","/community","/community/","/discus","/discus/","/board","/board/"};
         
         String baseline_matched_paths="NOT_FOUND";

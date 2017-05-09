@@ -3,19 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package focus;
 
-/**
- *
- * @author Dev
- */
+
 public class Keywords {
 
-    /**
+    /*
+     *
      * @param args the command line arguments
      */
+    
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        String urls="http://forum.ucweb.com:android:iphone:ios,http://lol.com:lol:troll:lel";
+        String[] url=urls.split(",");
+        String[] u=null;
+        
+        for(int i=0;i<url.length;i++){
+            u[i]=url[1];
+            //System.out.println("URL : "+url[0]);
+        }
+        
         String k1[]={"http://forum.ucweb.com","android","iphone","ios"};
         String kk1[]={"http://fjnujhyorum.ulcweb.com","android","blackberry","lol"};
         String uk="android,lol,ios";

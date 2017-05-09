@@ -23,7 +23,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
  import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 
@@ -34,10 +36,12 @@ public class Main_Window extends Application {
     
     @Override
     public void start(Stage stage) {
-        
+
       TextArea keywords = new TextArea();
       Button crawl = new Button("Search");
       TextArea progress_text=new TextArea();
+      //progress_text.setStyle("-fx-background-color: transparent;");
+
       Label label = new Label("Enter Keywords");
       
       progress_text.setEditable(false);
@@ -56,6 +60,9 @@ public class Main_Window extends Application {
       HBox horizontal_layout = new HBox();
       VBox vertical_layout = new VBox();
 
+      horizontal_layout.setStyle("-fx-background-color: transparent;");
+      //vertical_layout.setStyle("-fx-background-color: transparent;");
+      
       vertical_layout.setAlignment(Pos.CENTER); // To align nodes (Button,SearchBox,ProgressIndicator) in center
      
       vertical_layout.setSpacing(30);
@@ -73,7 +80,10 @@ public class Main_Window extends Application {
       
       Platform.setImplicitExit(false);
       
-      
+      //scene.setFill(Color.TRANSPARENT);
+
+      //scene.setFill(null);
+
       stage.setTitle("Main Window");
       stage.setScene(scene);
       stage.show();

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.TextArea;
 
 /**
  *
@@ -20,9 +21,11 @@ public class Crawl_EntryPage {
     
     String url;
     Filter filter;
+    TextArea text_area;
     
-    public Crawl_EntryPage(String url,Filter f)
+    public Crawl_EntryPage(TextArea text_area,String url,Filter f)
     {
+        this.text_area=text_area;
         this.url=url;
         filter=f;
     }
@@ -30,7 +33,7 @@ public class Crawl_EntryPage {
     public ArrayList<String> crawl_page() throws IOException, ClassNotFoundException, SQLException
     {
         
-            Entry_URLDiscovery obj=new Entry_URLDiscovery(url,filter);
+            Entry_URLDiscovery obj=new Entry_URLDiscovery(text_area,url,filter);
             try {
                 ArrayList<String> str=obj.get_url_paths(url);
                 

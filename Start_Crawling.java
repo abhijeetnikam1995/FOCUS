@@ -33,10 +33,16 @@ public class Start_Crawling {
         //turl="community.mybb.com/thread-209344.html";   //ThreadURL without schema
         //iurl="community.mybb.com/forum-176.html";      //IndexURL without shema
         
+        /*
         host="http://forum.ucweb.com";
         turl="forum.ucweb.com/forum.php?mod=viewthread&tid=1137449&extra=page%3D1";
         iurl="forum.ucweb.com/forum.php?mod=forumdisplay&fid=104";
-       
+       */
+        
+        
+        host="https://fluxbb.org/forums";
+        turl="fluxbb.org/forums/viewtopic.php?id=8856";
+        iurl="fluxbb.org/forums/viewforum.php?id=1";
         
         //Note : Do not add slash in the host URL
         //Note : regex only matches the path not the complete URL
@@ -90,7 +96,7 @@ public class Start_Crawling {
         
         
         
-        Entry_URLDiscovery entry_url_obj=new Entry_URLDiscovery(host,filter_obj);
+        Entry_URLDiscovery entry_url_obj=new Entry_URLDiscovery(text_area,host,filter_obj);
         entry_url=entry_url_obj.get_entry_url();
         //entry_url=entry_url_obj.redirectedUrl;
         //text_area.sett Platform.runLater(() -> text_area.appendText());
@@ -100,7 +106,7 @@ public class Start_Crawling {
         
         Platform.runLater(() ->text_area.appendText("\n\nEntry URL Found > "+entry_url));
          
-        Crawl_EntryPage x=new Crawl_EntryPage(entry_url,filter_obj);//http://forum.ucweb.com"); //Get Links (Paths Only) From Entry Page
+        Crawl_EntryPage x=new Crawl_EntryPage(text_area,entry_url,filter_obj);//http://forum.ucweb.com"); //Get Links (Paths Only) From Entry Page
 
         entry_page_urls=x.crawl_page();
 

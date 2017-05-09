@@ -54,7 +54,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
             //DeDuplicate it
             //Match it with regex and append in appropriate regex
             
-            Entry_URLDiscovery e_obj=new Entry_URLDiscovery(str,filter);
+            Entry_URLDiscovery e_obj=new Entry_URLDiscovery(text_area,str,filter);
             temp_urls=e_obj.get_url_paths(str);            
             temp_urls=filter.deDuplicate(temp_urls);
 
