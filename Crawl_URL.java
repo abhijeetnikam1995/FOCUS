@@ -22,11 +22,13 @@ import org.jsoup.select.Elements;
  *
  * @author Rakesh
  */
-public class Entry_URLDiscovery {
+public class Crawl_URL {
     static int id=1;
+    Boolean q_window_start_flag=true; //to make sure question window will be opened only once
+
     static ArrayList<String> allurllist=new ArrayList<>();
     static ArrayList<String> allquestionlist=new ArrayList<>();
-    String[] divs={"t_fsz","post_body","inner","postmsg","postbody"};
+    String[] post_div={"t_fsz","post_body","inner","postmsg","postbody"};
     String[] flipping_class={"nxt","pagination_next"};
     String[] flipping_sign={"\">Next</a></b></td>","\">Next</a></p>"};
     TextArea text_area;
@@ -41,7 +43,7 @@ public class Entry_URLDiscovery {
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
 
     
-    public Entry_URLDiscovery(TextArea text_area,String url,Filter filter) throws IOException,ClassNotFoundException, SQLException{
+    public Crawl_URL(TextArea text_area,String host,Filter filter) throws IOException,ClassNotFoundException, SQLException{
         
         this.text_area=text_area;
         
@@ -49,23 +51,26 @@ public class Entry_URLDiscovery {
         con=DriverManager.getConnection("jdbc:mysql://localhost:3306/crawler","root",""); 
         DB=con.createStatement();
         
-        
+        entry_url=host;
         this.filter=filter;
-        if(StringUtils.countMatches(url, "/")>3) //if given url contains path then remove it
-            url=url.substring(0, StringUtils.ordinalIndexOf(url, "/", 3));
-        this.url=url;
-        schema=url.substring(0,url.indexOf("/")+2); //http or https ??
+        if(StringUtils.countMatches(host, "/")>3) //if given host contains path then remove it
+            host=host.substring(0, StringUtils.ordinalIndexOf(host, "/", 3));
+        this.url=host;
+        schema=host.substring(0,host.indexOf("/")+2); //http or https ??
+       
             }
     
     
     
     
+    
+    /*
     public String get_entry_url() throws IOException,SQLException
     {        
-                
- 
+        //String tmpurl=url.substring(0, url)
         
-           ArrayList<String> url_paths=get_url_paths(url); //get all url paths 
+        
+        ArrayList<String> url_paths=get_url_paths(url); //get all url paths 
            String matched_baseline=baseline_url(url_paths);
            if("NOT_FOUND".equals(matched_baseline)){
                if(checksubdomains().length()>2)
@@ -76,9 +81,11 @@ public class Entry_URLDiscovery {
            
            entry_url=schema+host+matched_baseline;
            return entry_url;
+        
     }
+*/
     
-    public String checksubdomains() // return subdomain where forum is hosted
+    /*public String checksubdomains() // return subdomain where forum is hosted
     {
         String subdomain_name;
         
@@ -93,7 +100,7 @@ public class Entry_URLDiscovery {
             }
         }
         return "";
-    }
+    }*/
     
     
  
@@ -105,6 +112,7 @@ public class Entry_URLDiscovery {
         
         System.setProperty("http.proxyHost", "127.0.0.1");      //for debugging purpose
         System.setProperty("http.proxyPort", "8080");           //for debugging purpose
+        
         ArrayList<String> extracted_urls_path=new ArrayList<>();
         String user_url=url;
         String host;
@@ -212,10 +220,10 @@ public class Entry_URLDiscovery {
 
                         
                         query="insert into records(id,question,answer_url) values ("+id+",'"+links.get(i).text()+"','"+urlwithhost+"');";
-                   
                         if(DB.executeUpdate(query)>=1){
                             System.out.println("Insert query executed , id="+id);
-                                 if(id==8){
+                                 if(id==8&&q_window_start_flag){
+                                     q_window_start_flag=false;
                                      // Start Question Window Only When First 8 Record Is Obtained
                                           System.out.println("Starting Q_Window , id="+id);
                                           Platform.runLater(new Runnable() {
@@ -232,7 +240,7 @@ public class Entry_URLDiscovery {
                                 int flag=0;
                                 int z=0;
                                     while(z<2){ // Add contents from all flipping pages
-                                    z=z+1; // Only fetch 2 pages
+                                    z=z+1; // Only fetch 2 flipping pages
                                      Document doc1 = Jsoup.connect(urlwithhost).cookie("test","test").userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
      .followRedirects(true).timeout(300000).get();
                                      
@@ -281,12 +289,14 @@ public class Entry_URLDiscovery {
                                      if(flag==0){   // when no more flipping pages found break out of the loop
                                         break;
                                      }
-
-                                     if(!tmp.contains("http://")|!tmp.contains("https://")){ //When links does not include host
+                                     System.out.println("Entry URL :"+entry_url);
+                                     //System.out.println(!tmp.contains("https://"));
+                                     if(!tmp.contains(entry_url)){ //When links does not include host
                                          
                                          tmp=entry_url+"/"+tmp;
                                          
                                      }
+    
                                      
                                      System.out.println("URL : "+urlwithhost);  
                                      System.out.println("Flag : "+flag);
@@ -303,16 +313,14 @@ public class Entry_URLDiscovery {
                                       if(content.contains("'"))
                                          content=content.replaceAll("'", "\"");
                                      
-                                    
+                                    if(content.contains(Main_Window.keywords_text)) //Insert to DB only if whole pages content contains keyword
 
-             
-                                     query="update records set answer='"+content+"' where id="+id+";";   
-                                     
-                                     DB.execute(query);
-                                 
-                                 System.out.println("Executed");
-                                 
-                                 id=id+1;
+                                    {
+                                       query="update records set answer='"+content+"' where id="+id+";";   
+                                       DB.execute(query);
+                                       System.out.println("Matched Keyword Inserting");
+                                       id=id+1;
+                                    }   
                            }
                         else
                              System.out.println("Failed"); 
@@ -338,7 +346,7 @@ public class Entry_URLDiscovery {
     public String contentExtract(Document doc,String urlwithhost){
             Elements content_body=null;
             String content="";
-                    for(String str: divs){
+                    for(String str: post_div){
                                          
                        // System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
 
@@ -357,7 +365,7 @@ public class Entry_URLDiscovery {
                     return content;
     }
     
-    public String baseline_url(ArrayList<String> url_paths)
+    /*public String baseline_url(ArrayList<String> url_paths)
     {
                  //url_paths.get(i).endsWith("/forum")|url_paths.get(i).endsWith("/forum/")|url_paths.get(i).endsWith("/board")|url_paths.get(i).endsWith("/bbs")|url_paths.get(i).endsWith("/community")|url_paths.get(i).endsWith("/discus")|url_paths.get(i).endsWith("/board/")|url_paths.get(i).endsWith("/bbs/")|url_paths.get(i).endsWith("/community/")|url_paths.get(i).endsWith("/discus/"))
         String[] baselinearray={"/forums/index.php","/forums","/forums/","/board","/board/","/bbs","/bbs/","/community","/community/","/discus","/discus/","/board","/board/"};
@@ -381,7 +389,7 @@ public class Entry_URLDiscovery {
         }
         return baseline_matched_paths;
     }
-    
+    */
     
     
 }
