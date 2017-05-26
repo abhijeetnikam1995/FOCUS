@@ -77,7 +77,7 @@ public class Posts_Window extends Application {
             String query="select answer from records where id="+counter+";";
             rs=stmt.executeQuery(query);
             if(rs.first()){
-                System.out.println("Got record : "+rs.getString(1));
+                //System.out.println("Got record : "+rs.getString(1));
                 posts.setText(rs.getString(1));
                 }
         } catch (SQLException ex) {

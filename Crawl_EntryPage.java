@@ -33,14 +33,14 @@ public class Crawl_EntryPage {
     public ArrayList<String> crawl_page() throws IOException, ClassNotFoundException, SQLException
     {
         
-            Entry_URLDiscovery obj=new Entry_URLDiscovery(text_area,url,filter);
+            Crawl_URL obj=new Crawl_URL(text_area,url,filter);
             try {
                 ArrayList<String> str=obj.get_url_paths(url);
                 
                 
                 for(int j=0;j<str.size();j++){
                     String i=str.get(j);
-                    System.out.println(i);
+                    //System.out.println(i);
                     if(i.length()>1) // Get rid of only 1 char elements and first slash from paths
                     { 
                         i=i.substring(1,i.length());

@@ -145,7 +145,7 @@ public class Question_Window extends Application {
         
         
         EventHandler<MouseEvent> eventHandler = (MouseEvent e) -> {
-            System.out.println("Prev Button Clicked");
+            //System.out.println("Prev Button Clicked");
             
             counter=counter-8; // Decrement Counter
             if(start(questions,counter)!=1){    //Increment counter if operation fails
@@ -158,13 +158,13 @@ public class Question_Window extends Application {
                 counter=0;
             }
             
-            System.out.println("Prev Button Clicked  : counter->"+counter);
+            //System.out.println("Prev Button Clicked  : counter->"+counter);
         }; 
          prevButton.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler); 
         
          
         EventHandler<MouseEvent> eventHandler1 = (MouseEvent e) -> {
-            System.out.println("Next Button Clicked");
+            //System.out.println("Next Button Clicked");
             
             counter=counter+8; // Increment Counter
             if(start(questions,counter)!=1){    //Decrement counter if operation fails
@@ -175,7 +175,7 @@ public class Question_Window extends Application {
                 prevButton.setDisable(false);
                 //counter=0;
             }
-            System.out.println("Next Button Clicked  : counter->"+counter);
+            //System.out.println("Next Button Clicked  : counter->"+counter);
         }; 
         
          nextButton.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler1);          
@@ -280,7 +280,7 @@ public class Question_Window extends Application {
                     //Add 
                     rs=stmt.executeQuery("select question from records where id="+tmp+";");
                     if(rs.first()){
-                        System.out.println("Got record : "+rs.getString(1));
+                        //System.out.println("Got record : "+rs.getString(1));
                         questions.get(i).setText(rs.getString(1));
                     }
                     

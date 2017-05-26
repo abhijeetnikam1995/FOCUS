@@ -23,22 +23,20 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
  import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 
 
 public class Main_Window extends Application {
     
-    String keywords_text=null;
+    static String keywords_text=null;
 
     
     @Override
     public void start(Stage stage) {
 
       TextArea keywords = new TextArea();
-      Button crawl = new Button("Search");
+      Button crawl = new Button("Start");
       TextArea progress_text=new TextArea();
       //progress_text.setStyle("-fx-background-color: transparent;");
 
@@ -113,7 +111,8 @@ public class Main_Window extends Application {
                         }
                     }).start();
       }; 
-        crawl.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler); 
+        
+      crawl.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler); 
 
     }
     
