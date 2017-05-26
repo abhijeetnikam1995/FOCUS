@@ -2,6 +2,16 @@ Setup Database :
 
 create database crawler;
 use crawler;
-create table records(id int,question varchar(1000),answer blob,answer_url varchar(500));
+create table records(id int,question varchar(5000),answer longblob,answer_url varchar(1000));
 
 
+mysql> describe records;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| id         | int(11)       | YES  |     | NULL    |       |
+| question   | varchar(5000) | YES  |     | NULL    |       |
+| answer     | longblob      | YES  |     | NULL    |       |
+| answer_url | varchar(1000) | YES  |     | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
