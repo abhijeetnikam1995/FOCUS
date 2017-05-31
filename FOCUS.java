@@ -19,15 +19,10 @@ import java.io.IOException;
 public class FOCUS  {
 
     
-    
-    //Call Main Window
-    //
-    //
-    
     public static void main(String[] args) throws IOException {
+
+        new Config();
         
-        Main_Window main_win=new Main_Window();
-        main_win.start();  
     }
     
 }

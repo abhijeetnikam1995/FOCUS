@@ -31,17 +31,19 @@ public class Main_Window extends Application {
     
     static String keywords_text=null;
 
-    
+     
+
     @Override
     public void start(Stage stage) {
 
+      TextArea counter = new TextArea();
       TextArea keywords = new TextArea();
       Button crawl = new Button("Start");
       TextArea progress_text=new TextArea();
       //progress_text.setStyle("-fx-background-color: transparent;");
 
-      Label label = new Label("Enter Keywords");
-      
+      Label label = new Label("Enter Keyword");
+      Label label_counter = new Label("Counter");
       progress_text.setEditable(false);
       
       ProgressIndicator progress=new ProgressIndicator();
@@ -54,7 +56,9 @@ public class Main_Window extends Application {
       keywords.setPrefColumnCount(8);    //Width
       keywords.setPrefRowCount(5);       //Height
 
-      
+      counter.setPrefColumnCount(1);    //Width
+      counter.setPrefRowCount(1);       //Height
+
       HBox horizontal_layout = new HBox();
       VBox vertical_layout = new VBox();
 
@@ -69,14 +73,18 @@ public class Main_Window extends Application {
       HBox.setMargin(progress_text, new Insets(20, 20, 20, 20));
       
       ObservableList list_v=vertical_layout.getChildren();
-      list_v.addAll(label,keywords,crawl,progress);
+      list_v.addAll(label,keywords,crawl,progress,label_counter,counter);
       
       ObservableList list_h = horizontal_layout.getChildren();
       list_h.addAll(vertical_layout,progress_text);
       
       Scene scene = new Scene(horizontal_layout,1000,1000);
       
-      Platform.setImplicitExit(false);
+      Platform.setImplicitExit(true); // Closes Windows Instead Of Hinding It
+      stage.setOnCloseRequest((ae) -> { // SO, Exit application along with all backgroud threads 
+            Platform.exit();
+            System.exit(0);
+        });
       
       //scene.setFill(Color.TRANSPARENT);
 
@@ -100,7 +108,7 @@ public class Main_Window extends Application {
                         try {
                             
                             progress.setVisible(true);      //display progressbar
-                            startcrawl.start(progress_text);
+                            startcrawl.start(progress_text,counter);
                             progress.setVisible(false);     //hide progressbar
                             
                             

@@ -12,20 +12,25 @@ import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import org.apache.commons.lang3.StringUtils;
 
-/**
+/*
+ *
  *
  * @author rakesh
  */
+
 public class Start_Crawling {
     
     TextArea main_window;
-   
-    public void start(TextArea jtf) throws IOException, ClassNotFoundException, SQLException{
+    static String host;
+    
+    public void start(TextArea jtf,TextArea counter) throws IOException, ClassNotFoundException, SQLException{
+        
         
         main_window=jtf; 
-        String entry_url,host;
+        
         String tp_regex,ip_regex,turl,iurl;
         ArrayList<String> entry_page_urls,index_urls,thread_urls;
+
 
         
         //host="https://community.mybb.com";   //HOST
@@ -33,16 +38,26 @@ public class Start_Crawling {
         //iurl="community.mybb.com/forum-176.html";      //IndexURL without shema
         
         
-        host="http://forum.ucweb.com";
-        turl="forum.ucweb.com/forum.php?mod=viewthread&tid=1137449&extra=page%3D1";
-        iurl="forum.ucweb.com/forum.php?mod=forumdisplay&fid=104";
-       
+       /* host="http://forum.ucweb.com";
+        turl="http://forum.ucweb.com/forum.php?mod=viewthread&tid=1137449&extra=page%3D1";
+        iurl="http://forum.ucweb.com/forum.php?mod=forumdisplay&fid=104";
+       */
         
         /*
         host="https://fluxbb.org/forums/";
         turl="fluxbb.org/forums/viewtopic.php?id=8856";
         iurl="fluxbb.org/forums/viewforum.php?id=1";
         */
+        
+        host=Config.url;
+        turl=Config.turl;
+        iurl=Config.iurl;
+        
+        turl=turl.substring(turl.indexOf("://")+3, turl.length());
+        iurl=iurl.substring(iurl.indexOf("://")+3, iurl.length());
+
+        System.out.println(turl);
+        System.out.println(iurl);
         
         //Note : Do not add slash in the host URL
         //Note : regex only matches the path not the complete URL
@@ -96,17 +111,17 @@ public class Start_Crawling {
         
         
         
-        Crawl_URL entry_url_obj=new Crawl_URL(main_window,host,filter_obj);
-        entry_url=Crawl_URL.entry_url;
+        Crawl_URL entry_url_obj=new Crawl_URL(main_window,host,filter_obj,counter);
+        //entry_url=Crawl_URL.entry_url;
         //entry_url=entry_url_obj.redirectedUrl;
         //text_area.sett Platform.runLater(() -> main_window.appendText());
         //Platform.runLater(() -> main_window.appendText("\nPossible Entry URL : "+entry_url));
         
-        System.out.println("2. Entry Url > "+entry_url);
+        System.out.println("2. Entry Url > "+host);
         
-        Platform.runLater(() ->main_window.appendText("\n\nEntry URL > "+entry_url));
+        Platform.runLater(() ->main_window.appendText("\n\nEntry URL > "+host));
          
-        Crawl_EntryPage x=new Crawl_EntryPage(main_window,entry_url,filter_obj);//http://forum.ucweb.com"); //Get Links (Paths Only) From Entry Page
+        Crawl_EntryPage x=new Crawl_EntryPage(main_window,host,filter_obj,counter);//http://forum.ucweb.com"); //Get Links (Paths Only) From Entry Page
 
         entry_page_urls=x.crawl_page();
 
@@ -125,17 +140,17 @@ public class Start_Crawling {
         System.out.println("8. Thread URLS From Entry Page > "+thread_urls.toString());
 
         //---------------*/
-        String entry_url_host=entry_url;
+        String entry_url_host=host;
         
         //Crawling sub index pages
-        if(StringUtils.countMatches(entry_url, "/")>2){ // remove baseline added while entry url generation phase 
-                    entry_url_host=entry_url.substring(0,StringUtils.ordinalIndexOf(entry_url, "/", 3));
+        if(StringUtils.countMatches(host, "/")>2){ // remove baseline added while entry url generation phase 
+                    entry_url_host=host.substring(0,StringUtils.ordinalIndexOf(host, "/", 3));
         }
         
         Platform.runLater(() -> main_window.appendText("\n\nStarting Crawling\n************************************************************"));
         
         //System.out.println
-        Crawl_IndexPage crawli=new Crawl_IndexPage(filter_obj,main_window,entry_url_host,index_urls,thread_urls,ip_regex,tp_regex);
+        Crawl_IndexPage crawli=new Crawl_IndexPage(filter_obj,main_window,entry_url_host,index_urls,thread_urls,ip_regex,tp_regex,counter);
         crawli.crawl();
         /*for(String str0:crawli.getIndexURLArray()){
             Platform.runLater(() ->main_window.appendText("\n**INDEX**"+crawli.getIndexURLArray().size()+str0));

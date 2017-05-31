@@ -21,19 +21,21 @@ public class Crawl_EntryPage {
     
     String url;
     Filter filter;
-    TextArea text_area;
+    TextArea text_area,counter;
     
-    public Crawl_EntryPage(TextArea text_area,String url,Filter f)
+    
+    public Crawl_EntryPage(TextArea text_area,String url,Filter f,TextArea counter)
     {
         this.text_area=text_area;
         this.url=url;
         filter=f;
+        this.counter=counter;
     }
     
     public ArrayList<String> crawl_page() throws IOException, ClassNotFoundException, SQLException
     {
         
-            Crawl_URL obj=new Crawl_URL(text_area,url,filter);
+            Crawl_URL obj=new Crawl_URL(text_area,url,filter,counter);
             try {
                 ArrayList<String> str=obj.get_url_paths(url);
                 

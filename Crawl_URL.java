@@ -31,33 +31,33 @@ public class Crawl_URL {
     String[] post_div={"t_fsz","post_body","inner","postmsg","postbody"};
     String[] flipping_class={"nxt","pagination_next"};
     String[] flipping_sign={"\">Next</a></b></td>","\">Next</a></p>"};
-    TextArea text_area;
+    TextArea text_area,counter;
     
     Filter filter;
     String url,host,schema,index_text,thread_text;
     ArrayList<String> external_urls=new ArrayList<>();
     String redirectedUrl; //to store destination url after redirection
     Connection con;
-    static String entry_url;
+    //static String entry_url;
     Statement DB = null;
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
 
     
-    public Crawl_URL(TextArea text_area,String host,Filter filter) throws IOException,ClassNotFoundException, SQLException{
+    public Crawl_URL(TextArea text_area,String host,Filter filter,TextArea counter) throws IOException,ClassNotFoundException, SQLException{
         
         this.text_area=text_area;
-        
+        this.counter=counter;
         Class.forName("com.mysql.jdbc.Driver");  
         con=DriverManager.getConnection("jdbc:mysql://localhost:3306/crawler","root",""); 
         DB=con.createStatement();
         
-        entry_url=host;
+        //entry_url=host;
         this.filter=filter;
         if(StringUtils.countMatches(host, "/")>3) //if given host contains path then remove it
             host=host.substring(0, StringUtils.ordinalIndexOf(host, "/", 3));
         this.url=host;
         schema=host.substring(0,host.indexOf("/")+2); //http or https ??
-       
+       //System.out.println("EU=>"+entry_url);
             }
     
     
@@ -107,6 +107,10 @@ public class Crawl_URL {
     
     public ArrayList<String> get_url_paths(String url) throws IOException,SQLException
     {
+        
+        if(url.contains("&amp;")) // fix for encoded URL's
+                url=url.replaceAll("&amp;", "&");
+                                         
         
         System.out.println("\n URL received in get_url_path > "+url);
         
@@ -289,12 +293,18 @@ public class Crawl_URL {
                                      if(flag==0){   // when no more flipping pages found break out of the loop
                                         break;
                                      }
-                                     System.out.println("Entry URL :"+entry_url);
+                                            //System.out.println("EU=>"+entry_url);
+
+                                     System.out.println("Entry URL :"+Start_Crawling.host);
                                      //System.out.println(!tmp.contains("https://"));
-                                     if(!tmp.contains(entry_url)){ //When links does not include host
+                                     if(!tmp.contains(host)){ //When links does not include host
+                                         if(tmp.startsWith(".")) // fix for links like "./nextpage.php"
+                                             tmp=tmp.substring(1,tmp.length());
+                                         tmp=Start_Crawling.host+"/"+tmp;
                                          
-                                         tmp=entry_url+"/"+tmp;
-                                         
+                                         if(tmp.contains("&amp;")){ //fix for encoded URL's
+                                             tmp=tmp.replaceAll("&amp;", "&");
+                                         }
                                      }
     
                                      
@@ -319,6 +329,7 @@ public class Crawl_URL {
                                        query="update records set answer='"+content+"' where id="+id+";";   
                                        DB.execute(query);
                                        System.out.println("Matched Keyword Inserting");
+                                       Platform.runLater(() ->counter.setText(""+id));
                                        id=id+1;
                                     }   
                            }

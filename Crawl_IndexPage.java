@@ -19,10 +19,10 @@ public class Crawl_IndexPage { // Crawls Index Pages
     
     ArrayList<String> index_urls,thread_urls;
     String i_regex,t_regex,url;
-    final TextArea text_area;
+    final TextArea text_area,counter;
     Filter filter;
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
-    public Crawl_IndexPage(Filter f,TextArea text_area,String url,ArrayList<String> index_urls,ArrayList<String> thread_urls,String i_regex,String t_regex)
+    public Crawl_IndexPage(Filter f,TextArea text_area,String url,ArrayList<String> index_urls,ArrayList<String> thread_urls,String i_regex,String t_regex,TextArea counter)
     {
         this.index_urls=index_urls;
         this.thread_urls=thread_urls;
@@ -31,6 +31,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
         this.url=url;
         this.text_area=text_area;
         filter=f;
+        this.counter=counter;
     }
     
     public void crawl() {
@@ -54,7 +55,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
             //DeDuplicate it
             //Match it with regex and append in appropriate regex
             
-            Crawl_URL e_obj=new Crawl_URL(text_area,str,filter);
+            Crawl_URL e_obj=new Crawl_URL(text_area,str,filter,counter);
             temp_urls=e_obj.get_url_paths(str);            
             temp_urls=filter.deDuplicate(temp_urls);
 
