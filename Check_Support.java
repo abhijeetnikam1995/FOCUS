@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package focus;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -40,12 +41,7 @@ public class Check_Support {
             HashMap<String, String> index_url = new HashMap<String, String>();
             HashMap<String, String> thread_url = new HashMap<String, String>(); 
     
-   /* 
-    HashMap<String, String> signature_cookie = new HashMap<String, String>();
-    HashMap<String, String> signature_body = new HashMap<String, String>();
-    HashMap<String, String> index_url = new HashMap<String, String>();
-    HashMap<String, String> thread_url = new HashMap<String, String>();
-    */
+
             
     static String forum_package=""; // For storing detected forum package type
     
@@ -96,11 +92,11 @@ public class Check_Support {
         thread_url.put("MYBB-1","showthread.php?tid=1");
 
 
-        //HashMap<String, String> =signature_body.
     }
     
+    //Identify thread and index URL
     
-    public int check_support(String url) //identify thread and index URL
+    public int isSupported(String url) 
     {
         this.url=url;
         
@@ -111,7 +107,6 @@ public class Check_Support {
             Connection.Response response = Jsoup.connect(url).method(Connection.Method.GET).followRedirects(false).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36").timeout(100000).execute();
             
             Document doc = response.parse();
-            //System.out.println(doc.html());
 
             String cookies="Cookies Not Set.";
             if(response.header("Set-Cookie")!=null)
@@ -121,7 +116,7 @@ public class Check_Support {
             System.out.println(cookies);
             
             
-            //Check signature in cookie
+            //Check signature in cookies
             for(String sign:signature_cookie.keySet()){
                 
                 for(String value:signature_cookie.get(sign))
@@ -156,20 +151,20 @@ public class Check_Support {
             
             System.out.println("Couldn't find software package");
 
-            return 0; // because thread is not supported
+            return 0; // because forum is not supported
             
         } catch (IOException ex) {
             Logger.getLogger(Check_Support.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return 0;
+        return 0; // because forum is not supported or unable to detect forum
     }
     
-    public String thread_url()
+    public String getThreadURL()
     {
         return url+thread_url.get(forum_package);
     }
     
-        public String index_url()
+        public String getIndexURL()
     {
         return url+index_url.get(forum_package);
 

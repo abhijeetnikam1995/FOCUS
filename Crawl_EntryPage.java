@@ -19,25 +19,38 @@ import javafx.scene.control.TextArea;
  */
 public class Crawl_EntryPage {
     
-    String url;
+    String entryPageURL;
     Filter filter;
-    TextArea text_area,counter;
+    TextArea progressText,pagesCounterText;
     
-    
+    /**
+     *
+     * @param text_area
+     * @param url
+     * @param f
+     * @param counter
+     */
     public Crawl_EntryPage(TextArea text_area,String url,Filter f,TextArea counter)
     {
-        this.text_area=text_area;
-        this.url=url;
+        this.progressText=text_area;
+        this.entryPageURL=url;
         filter=f;
-        this.counter=counter;
+        this.pagesCounterText=counter;
     }
     
+    /**
+     *
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public ArrayList<String> crawl_page() throws IOException, ClassNotFoundException, SQLException
     {
         
-            Crawl_URL obj=new Crawl_URL(text_area,url,filter,counter);
+            Crawl_URL obj=new Crawl_URL(progressText,entryPageURL,filter,pagesCounterText);
             try {
-                ArrayList<String> str=obj.get_url_paths(url);
+                ArrayList<String> str=obj.get_url_paths(entryPageURL);
                 
                 
                 for(int j=0;j<str.size();j++){

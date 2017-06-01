@@ -31,33 +31,38 @@ public class Crawl_URL {
     String[] post_div={"t_fsz","post_body","inner","postmsg","postbody"};
     String[] flipping_class={"nxt","pagination_next"};
     String[] flipping_sign={"\">Next</a></b></td>","\">Next</a></p>"};
-    TextArea text_area,counter;
+    TextArea progressText,pagesCounterText;
     
     Filter filter;
     String url,host,schema,index_text,thread_text;
     ArrayList<String> external_urls=new ArrayList<>();
-    String redirectedUrl; //to store destination url after redirection
     Connection con;
-    //static String entry_url;
     Statement DB = null;
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
 
-    
+    /**
+     *
+     * @param text_area
+     * @param host
+     * @param filter
+     * @param counter
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public Crawl_URL(TextArea text_area,String host,Filter filter,TextArea counter) throws IOException,ClassNotFoundException, SQLException{
         
-        this.text_area=text_area;
-        this.counter=counter;
+        this.progressText=text_area;
+        this.pagesCounterText=counter;
         Class.forName("com.mysql.jdbc.Driver");  
         con=DriverManager.getConnection("jdbc:mysql://localhost:3306/crawler","root",""); 
         DB=con.createStatement();
         
-        //entry_url=host;
         this.filter=filter;
         if(StringUtils.countMatches(host, "/")>3) //if given host contains path then remove it
             host=host.substring(0, StringUtils.ordinalIndexOf(host, "/", 3));
         this.url=host;
         schema=host.substring(0,host.indexOf("/")+2); //http or https ??
-       //System.out.println("EU=>"+entry_url);
             }
     
     
@@ -101,6 +106,15 @@ public class Crawl_URL {
         }
         return "";
     }*/
+
+    /**
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
+
     
     
  
@@ -209,7 +223,7 @@ public class Crawl_URL {
                     
                     System.out.println("\n Got a thread URL > "+urlwithouthost);
                     final String tmpurlwithouthost=urlwithouthost;
-                    Platform.runLater(() ->text_area.appendText("\nFound a thread URL : "+tmpurlwithouthost));
+                    Platform.runLater(() ->progressText.appendText("\nFound a thread URL : "+tmpurlwithouthost));
 
                     
                     //Start new thread to obtain the answer then add it in below query
@@ -252,11 +266,6 @@ public class Crawl_URL {
                                      
                                     content=content+"\nNEXT PAGE CONTENTS\n"+contentExtract(doc1,urlwithhost);   
 
-                                     /*
-                                    
-                                    if(!doc1.html().contains("class=\"nxt\">Next</a>")) //When no more flipping URL's are found
-                                         break;
-                                     */
                                      
                                      for(String next_class:flipping_class)  // Check if next page is available
                                      {
@@ -278,9 +287,7 @@ public class Crawl_URL {
                                             System.out.println("Matched Class : "+next_class);
                                             flag=1;
                                             tmp=doc1.html().substring(0, doc1.html().lastIndexOf(next_class)+2); // divide from begining to matched sign
-                                            //System.out.println(tmp);
                                             tmp=tmp.substring(tmp.lastIndexOf("href=")+6,tmp.lastIndexOf("\">")); ////Assign flipping URL to variable
-                                            //tmp=doc1.select("a."+next_class).first().attr("abs:href"); 
                                             System.out.println(tmp);
 
                                         }
@@ -293,10 +300,8 @@ public class Crawl_URL {
                                      if(flag==0){   // when no more flipping pages found break out of the loop
                                         break;
                                      }
-                                            //System.out.println("EU=>"+entry_url);
 
                                      System.out.println("Entry URL :"+Start_Crawling.host);
-                                     //System.out.println(!tmp.contains("https://"));
                                      if(!tmp.contains(host)){ //When links does not include host
                                          if(tmp.startsWith(".")) // fix for links like "./nextpage.php"
                                              tmp=tmp.substring(1,tmp.length());
@@ -329,7 +334,7 @@ public class Crawl_URL {
                                        query="update records set answer='"+content+"' where id="+id+";";   
                                        DB.execute(query);
                                        System.out.println("Matched Keyword Inserting");
-                                       Platform.runLater(() ->counter.setText(""+id));
+                                       Platform.runLater(() ->pagesCounterText.setText(""+id));
                                        id=id+1;
                                     }   
                            }
@@ -354,12 +359,17 @@ public class Crawl_URL {
         return extracted_urls_path;
     }
     
+    /**
+     *
+     * @param doc
+     * @param urlwithhost
+     * @return
+     */
     public String contentExtract(Document doc,String urlwithhost){
             Elements content_body=null;
             String content="";
                     for(String str: post_div){
                                          
-                       // System.out.println("str:"+str+"\nurlwithhost:"+urlwithhost);
 
                                            if(doc.body().html().contains("<div class=\""+str))
                                                 {

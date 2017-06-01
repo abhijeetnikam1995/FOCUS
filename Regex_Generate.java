@@ -20,7 +20,11 @@ public class Regex_Generate {
         String escapeChars="\\$.*+?{}|[]()^";   // Characters that needs to be escaped before generating regex
         int count=0; // count for keeping count of  training sets
 
-       
+    /**
+     *
+     * @param training_set
+     * @return
+     */
     public String generateRegex(String[] training_set)  
     {
                 //Scan URL's char by char and Generate Regex
@@ -67,7 +71,6 @@ public class Regex_Generate {
                         regex.append("(&|&amp;)");      // because sometimes & could be encoded and sometimes not
                         continue;
                     }
-                    //System.out.println("Matched "+train_set.charAt(j));
                     regex.append(train_set.charAt(i));
             
             }
@@ -87,14 +90,17 @@ public class Regex_Generate {
     }
     
     //Length of all training sets must be same
+
+    /**
+     *
+     * @param training_set
+     */
     
     public  Regex_Generate(String[] training_set)
     {
         train_set=training_set[0];
     }
-    /**
-     * @param args the command line arguments
-     */
+    
   
     
 }

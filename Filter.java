@@ -18,6 +18,12 @@ import java.util.regex.Pattern;
 public class Filter {
     String ip_regex,tp_regex;
     Pattern r;
+
+    /**
+     *
+     * @param ip_regex
+     * @param tp_regex
+     */
     public Filter(String ip_regex,String tp_regex) //get and set regex
     {
         this.ip_regex=ip_regex;
@@ -26,31 +32,43 @@ public class Filter {
 
     }
     
-    
+    /**
+     *
+     * @param url
+     * @return
+     */
     public boolean isIndexURL(String url){
                 r = Pattern.compile(ip_regex);
                 Matcher m = r.matcher(url);
                 if(m.matches())
                 {
-                    //System.out.println("Matched"+url);
                       return true;
                 }
                 return false;
 
     }
     
+    /**
+     *
+     * @param url
+     * @return
+     */
     public boolean isThreadURL(String url){
                 r = Pattern.compile(tp_regex);
                 Matcher m = r.matcher(url);
                 if(m.matches())
                 {
-                    //System.out.println("Matched"+url);
                       return true;
                 }
                 return false;
 
     }
     
+    /**
+     *
+     * @param urls
+     * @return
+     */
     public ArrayList<String> filterIndexURL(ArrayList<String> urls){          
 
         //remove url's that doesn't match the regex
@@ -65,7 +83,6 @@ public class Filter {
                 Matcher m = r.matcher(url);
                 if(m.matches())
                 {
-                    //System.out.println("Matched"+url);
                     temp_url.add(url);
                 }
       
@@ -76,8 +93,12 @@ public class Filter {
             
     }
     
-    
-        public ArrayList<String> filterThreadURL(ArrayList<String> urls){          
+    /**
+     *
+     * @param urls
+     * @return
+     */
+    public ArrayList<String> filterThreadURL(ArrayList<String> urls){          
 
         //remove url's that doesn't match the regex
             r = Pattern.compile(tp_regex);
@@ -90,7 +111,6 @@ public class Filter {
                 Matcher m = r.matcher(url);
                 if(m.matches())
                 {
-                    //System.out.println("Matched"+url);
                     temp_url.add(url);
                 }
       
@@ -101,6 +121,11 @@ public class Filter {
             
     }
     
+    /**
+     *
+     * @param urls
+     * @return
+     */
     public ArrayList<String> deDuplicate(ArrayList<String> urls){
         // Remove duplicate URL's
             Set<String> hs = new HashSet<>(); // SO

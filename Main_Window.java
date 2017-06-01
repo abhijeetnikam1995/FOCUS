@@ -25,8 +25,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
  import javafx.stage.Stage;
 
-
-
+/**
+ *
+ * @author rakesh
+ */
 public class Main_Window extends Application {
     
     static String keywords_text=null;
@@ -124,6 +126,9 @@ public class Main_Window extends Application {
 
     }
     
+    /**
+     *
+     */
     public void start(){
         
         launch();

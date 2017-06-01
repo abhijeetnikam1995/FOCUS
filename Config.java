@@ -14,28 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package focus;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang3.math.NumberUtils;
 /**
  *
  * @author rakesh
  */
+
 public class Config{
     
  
-    static int pdepth=0;
-    static String url="";
-    static String turl="";
-    static String iurl="";
+    static int flippingDepth=0;
+    static String entryURL="";
+    static String threadURL="";
+    static String indexURL="";
 
+    /**
+     *
+     */
     public Config(){
         
       JLabel l_url=new JLabel("Enter URL", JLabel.CENTER);        
@@ -79,7 +80,7 @@ public class Config{
              int flag=0;
              if(t_url.getText().length()>4 && t_url.getText().contains("://")){
                  flag=flag+1;
-                 url=t_url.getText();
+                 entryURL=t_url.getText();
              }
              else
                 JOptionPane.showMessageDialog(mainFrame, "Invalid URL!");
@@ -92,14 +93,14 @@ public class Config{
              
             if(flag==2){
                 Check_Support cs=new Check_Support();
-                if(cs.check_support(url)!=1)
+                if(cs.isSupported(entryURL)!=1)
                 {
                     System.out.println("Forum package is not supported.");
                     JOptionPane.showMessageDialog(mainFrame, "Forum Package Is Not Supported !");
                 }
                 else{
-                    turl=cs.thread_url();
-                    iurl=cs.index_url();
+                    threadURL=cs.getThreadURL();
+                    indexURL=cs.getIndexURL();
                     mainFrame.setVisible(false);
                     new Main_Window().start(); 
                 }

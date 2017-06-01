@@ -18,27 +18,42 @@ import javafx.scene.control.TextArea;
 public class Crawl_IndexPage { // Crawls Index Pages
     
     ArrayList<String> index_urls,thread_urls;
-    String i_regex,t_regex,url;
-    final TextArea text_area,counter;
+    String indexURL_Regex,threadURL_Regex,url;
+    final TextArea progressText,pagesCounterText;
     Filter filter;
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
+
+    /**
+     *
+     * @param f
+     * @param text_area
+     * @param url
+     * @param index_urls
+     * @param thread_urls
+     * @param i_regex
+     * @param t_regex
+     * @param counter
+     */
     public Crawl_IndexPage(Filter f,TextArea text_area,String url,ArrayList<String> index_urls,ArrayList<String> thread_urls,String i_regex,String t_regex,TextArea counter)
     {
         this.index_urls=index_urls;
         this.thread_urls=thread_urls;
-        this.i_regex=i_regex;
-        this.t_regex=t_regex;
+        this.indexURL_Regex=i_regex;
+        this.threadURL_Regex=t_regex;
         this.url=url;
-        this.text_area=text_area;
+        this.progressText=text_area;
         filter=f;
-        this.counter=counter;
+        this.pagesCounterText=counter;
     }
     
+    /**
+     *
+     */
     public void crawl() {
         
         try{
         
-        Filter filter=new Filter(i_regex,t_regex);
+        Filter filter=new Filter(indexURL_Regex,threadURL_Regex);
         //f_obj.deDuplicate(index_urls);
         ArrayList<String> temp_urls=new ArrayList<>();
         for(int i=0;i<index_urls.size();i++){
@@ -48,14 +63,14 @@ public class Crawl_IndexPage { // Crawls Index Pages
             
             System.out.println("\nLocation :  >> "+str);
             final String str_final=str;
-            Platform.runLater(() ->text_area.appendText("\n\nLocation :  >> "+str_final));
+            Platform.runLater(() ->progressText.appendText("\n\nLocation :  >> "+str_final));
             
             //Download str
             //Extract Links
             //DeDuplicate it
             //Match it with regex and append in appropriate regex
             
-            Crawl_URL e_obj=new Crawl_URL(text_area,str,filter,counter);
+            Crawl_URL e_obj=new Crawl_URL(progressText,str,filter,pagesCounterText);
             temp_urls=e_obj.get_url_paths(str);            
             temp_urls=filter.deDuplicate(temp_urls);
 
@@ -92,7 +107,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
                     {                    
                         System.out.println("\nAdding Index URL:"+str1);
                         final String str_final1=str1;
-                        Platform.runLater(() ->text_area.appendText("\nAdding Index URL >> "+str_final1));
+                        Platform.runLater(() ->progressText.appendText("\nAdding Index URL >> "+str_final1));
                         index_urls.add(str1);
 
                     }
@@ -103,7 +118,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
                     {
                         System.out.println("\nAdding Thread URL:"+str1);
                         final String str_final1=str1;
-                        Platform.runLater(() ->text_area.appendText("\nAdding Thread URL >> "+str_final1));
+                        Platform.runLater(() ->progressText.appendText("\nAdding Thread URL >> "+str_final1));
                         thread_urls.add(str1);
                     }
                 }
@@ -124,10 +139,18 @@ public class Crawl_IndexPage { // Crawls Index Pages
         
     }
     
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getIndexURLArray(){
         return index_urls;
     }
     
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getThreadURLArray(){
         return thread_urls;
     }

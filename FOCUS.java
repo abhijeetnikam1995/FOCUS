@@ -18,7 +18,11 @@ import java.io.IOException;
 
 public class FOCUS  {
 
-    
+    /**
+     *
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
 
         new Config();
