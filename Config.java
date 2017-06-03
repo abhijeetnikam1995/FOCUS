@@ -87,6 +87,7 @@ public class Config{
                
              if(t_depth.getText().length()>0 && NumberUtils.isDigits(t_depth.getText())){
                  flag=flag+1;
+                 flippingDepth=Integer.parseInt(t_depth.getText());
              }
              else
                 JOptionPane.showMessageDialog(mainFrame, "Invalid Depth!");

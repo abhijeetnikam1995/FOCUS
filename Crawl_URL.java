@@ -256,15 +256,15 @@ public class Crawl_URL {
                                  
                                 String content="",tmp="";
                                 int flag=0;
-                                int z=0;
-                                    while(z<2){ // Add contents from all flipping pages
+                                int z=1;
+                                    while(z<=Config.flippingDepth){ // Add contents from all flipping pages, how many pages to fetch?
                                     z=z+1; // Only fetch 2 flipping pages
                                      Document doc1 = Jsoup.connect(urlwithhost).cookie("test","test").userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
      .followRedirects(true).timeout(300000).get();
                                      
                                      flag=0; //reset the flag for each page
                                      
-                                    content=content+"\nNEXT PAGE CONTENTS\n"+contentExtract(doc1,urlwithhost);   
+                                    content=content+contentExtract(doc1,urlwithhost);   
 
                                      
                                      for(String next_class:flipping_class)  // Check if next page is available
@@ -367,16 +367,17 @@ public class Crawl_URL {
      */
     public String contentExtract(Document doc,String urlwithhost){
             Elements content_body=null;
-            String content="";
+            String content="",author="";
                     for(String str: post_div){
-                                         
-
-                                           if(doc.body().html().contains("<div class=\""+str))
-                                                {
+                        
+                                            // Adding content
+                                           if(doc.body().html().contains("<div class=\""+str)) 
+                                                {                                                    
                                                     content_body= doc.select("div."+str);
                                                     for(Element e:content_body)
                                                         {
-                                                            content=content+e.text()+"\n\n";
+                                                            if(e.text().length()>0) // Empty body shall not be included
+                                                                content=content+author+":\n\n"+e.text()+"\n____________________________________________________________________________\n";
                                                          }
                                                     
                                                     break;
