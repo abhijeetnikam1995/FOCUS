@@ -18,11 +18,25 @@ import org.apache.commons.lang3.StringUtils;
  * @author rakesh
  */
 
+/**
+ *
+ * @author rakesh
+ */
+
+
 public class Start_Crawling {
     
     TextArea progressText;
     static String host;
     
+    /**
+     *
+     * @param jtf
+     * @param pagesCounterText
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void start(TextArea jtf,TextArea pagesCounterText) throws IOException, ClassNotFoundException, SQLException{
         
         
@@ -108,7 +122,7 @@ public class Start_Crawling {
         
         
         
-        Crawl_URL entry_url_obj=new Crawl_URL(progressText,host,filter_obj,pagesCounterText);
+       // TEST IT **********//Crawl_URL entry_url_obj=new Crawl_URL(progressText,host,filter_obj,pagesCounterText);
 
         
         System.out.println("2. Entry Url > "+host);

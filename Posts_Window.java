@@ -32,6 +32,10 @@ public class Posts_Window extends Application {
     Statement stmt=null;
     ResultSet rs=null;
     
+    /**
+     *
+     * @param counter
+     */
     public Posts_Window(int counter){
         
         this.counter=counter;
@@ -70,7 +74,10 @@ public class Posts_Window extends Application {
         updateUI(posts);
     }
     
-    
+    /**
+     *
+     * @param posts
+     */
     public void updateUI(TextArea posts){
         
         try {

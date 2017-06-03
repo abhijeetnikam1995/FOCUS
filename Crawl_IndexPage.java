@@ -23,17 +23,7 @@ public class Crawl_IndexPage { // Crawls Index Pages
     Filter filter;
     String exclude_parameters[]={"action=","fromuid=","from=","page=",";all","sort=", "extra=", "filter=","lastpage=","orderby=","digest=","dateline=","specialType=","typeId=","prefix=","sortby=","detect=","order="};
 
-    /**
-     *
-     * @param f
-     * @param text_area
-     * @param url
-     * @param index_urls
-     * @param thread_urls
-     * @param i_regex
-     * @param t_regex
-     * @param counter
-     */
+
     public Crawl_IndexPage(Filter f,TextArea text_area,String url,ArrayList<String> index_urls,ArrayList<String> thread_urls,String i_regex,String t_regex,TextArea counter)
     {
         this.index_urls=index_urls;
@@ -147,10 +137,12 @@ public class Crawl_IndexPage { // Crawls Index Pages
         return index_urls;
     }
     
-    /**
+    /*
+     *
      *
      * @return
      */
+    
     public ArrayList<String> getThreadURLArray(){
         return thread_urls;
     }

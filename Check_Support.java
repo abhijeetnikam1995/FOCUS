@@ -32,6 +32,12 @@ import org.jsoup.nodes.Document;
  * @author rakesh
  */
 
+/**
+ *
+ * @author rakesh
+ */
+
+
 public class Check_Support {
     
     String url; // If url does not require any script then it should end with a slash (/) (http://lol.com/ or http://lol.com/forum.php)
@@ -45,9 +51,12 @@ public class Check_Support {
             
     static String forum_package=""; // For storing detected forum package type
     
+    /**
+     *
+     */
     public Check_Support(){
     
-        signature_cookie.put("MYBB","mybb[lastactive]");
+        signature_cookie.put("MYBB-1","mybb[lastactive]");
         signature_cookie.put("DISCUZ","_lastact=");
         signature_cookie.put("DISCUZ","_lastvisit=");
         
@@ -56,6 +65,8 @@ public class Check_Support {
         
         signature_body.put("MYBB", "Powered By <a href=\"http://www.mybboard.net");
         signature_body.put("MYBB", "Powered By <a href=\"https://www.mybboard.net");
+        
+        signature_body.put("MYBB-1", "\" target=\"_blank\">MyBB Group</a>");
 
         signature_body.put("MYBB-1","Powered By <a href=\"http://mybb.com");
         signature_body.put("MYBB-1","Powered By <a href=\"https://mybb.com");
@@ -74,6 +85,8 @@ public class Check_Support {
         signature_body.put("PUNBB", "Powered by <a href=\"https://www.punbb.org");
         signature_body.put("PUNBB", "Powered by <a href=\"https://punbb.informer.com");
         signature_body.put("PUNBB", "<p id=\"copyright\">Powered by <strong><a href=\"https://punbb.informer.com");
+        
+        
         
         index_url.put("DISCUZ","?mod=forumdisplay&fid=1");
         //index_url.put("DISCUZ-1","forum-1-1.html");
@@ -95,6 +108,12 @@ public class Check_Support {
     }
     
     //Identify thread and index URL
+
+    /**
+     *
+     * @param url
+     * @return
+     */
     
     public int isSupported(String url) 
     {
@@ -121,7 +140,7 @@ public class Check_Support {
                 
                 for(String value:signature_cookie.get(sign))
                 {
-                    if(cookies.contains(value))
+                    if(cookies.toLowerCase().contains(value.toLowerCase()))
                     {   
                         System.out.println(sign);
                         forum_package=sign;
@@ -138,16 +157,29 @@ public class Check_Support {
                 System.out.println(sign);
                 for(String value:signature_body.get(sign))
                 {   System.out.println(value);
-                    if(doc.html().contains(value))
+                    if(doc.html().toLowerCase().contains(value.toLowerCase()))
                     {   
                         System.out.println(sign);
                         forum_package=sign;
+                        
+                                //  temporary fix for MyBB
+                                if(forum_package=="MYBB"||forum_package=="MYBB-1")
+                                    if(doc.html().toLowerCase().contains("showthread.php?tid=") && doc.html().toLowerCase().contains("forumdisplay.php?fid=")) 
+                                    {
+                                        forum_package="MYBB-1";
+                                    }
+                                    else{
+                                        forum_package="MYBB";
+                                    }
+                        
                         return 1;
                     }
                 }
                 
 
             }
+            
+            
             
             System.out.println("Couldn't find software package");
 
@@ -159,12 +191,20 @@ public class Check_Support {
         return 0; // because forum is not supported or unable to detect forum
     }
     
+    /**
+     *
+     * @return
+     */
     public String getThreadURL()
     {
         return url+thread_url.get(forum_package);
     }
     
-        public String getIndexURL()
+    /**
+     *
+     * @return
+     */
+    public String getIndexURL()
     {
         return url+index_url.get(forum_package);
 

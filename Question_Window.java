@@ -33,14 +33,59 @@ import javafx.stage.Stage;
 
 public class Question_Window extends Application {
     
+    /**
+     *
+     */
     public static int counter=0;
     Connection con=null;
     Statement stmt;
     ResultSet rs;
     Button prevButton,nextButton;
-    public TextArea q1,q2,q3,q4,q5,q6,q7,q8;
+
+    /**
+     *
+     */
+    public TextArea q1,
+
+    /**
+     *
+     */
+    q2,
+
+    /**
+     *
+     */
+    q3,
+
+    /**
+     *
+     */
+    q4,
+
+    /**
+     *
+     */
+    q5,
+
+    /**
+     *
+     */
+    q6,
+
+    /**
+     *
+     */
+    q7,
+
+    /**
+     *
+     */
+    q8;
     Button see1,see2,see3,see4,see5,see6,see7,see8;
     
+    /**
+     *
+     */
     public Question_Window(){
         try {  
             //Initialize DB 
@@ -261,7 +306,12 @@ public class Question_Window extends Application {
         
     }
     
-    
+    /**
+     *
+     * @param questions
+     * @param count
+     * @return
+     */
     public int start(ArrayList<TextArea> questions,int count){
 
                 //System.out.println(questions.size()); 

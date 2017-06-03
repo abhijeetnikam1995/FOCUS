@@ -19,11 +19,7 @@ public class Filter {
     String ip_regex,tp_regex;
     Pattern r;
 
-    /**
-     *
-     * @param ip_regex
-     * @param tp_regex
-     */
+
     public Filter(String ip_regex,String tp_regex) //get and set regex
     {
         this.ip_regex=ip_regex;
