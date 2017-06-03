@@ -99,7 +99,7 @@ public class Check_Support {
         thread_url.put("DISCUZ","?mod=viewthread&tid=1&extra=page%3D1");
         //thread_url.put("DISCUZ-1","thread-1-1-1.html");
         thread_url.put("MYBB","thread-1.html");
-        thread_url.put("FLUXBB","viewforum.php?id=1");
+        thread_url.put("FLUXBB","viewtopic.php?id=1");
         thread_url.put("PHPBB","viewtopic.php?f=1&t=1");
         thread_url.put("PUNBB","viewtopic.php?id=1");
         thread_url.put("MYBB-1","showthread.php?tid=1");

@@ -49,7 +49,7 @@ public class Regex_Generate {
             {
                     
                     if("?".contains(String.valueOf(train_set.charAt(i)))){  //to handle unexpected/dynamic paramters in URL
-                        regex.append("?(.)*");
+                        regex.append("\\?(.)*");
                         continue;
                     }
                     

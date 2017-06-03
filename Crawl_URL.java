@@ -222,8 +222,8 @@ public class Crawl_URL {
                 {
                     
                     System.out.println("\n Got a thread URL > "+urlwithouthost);
-                    final String tmpurlwithouthost=urlwithouthost;
-                    Platform.runLater(() ->progressText.appendText("\nFound a thread URL : "+tmpurlwithouthost));
+                    //final String tmpurlwithouthost=urlwithouthost;
+                    //Platform.runLater(() ->progressText.appendText("\nFound a thread URL : "+tmpurlwithouthost));
 
                     
                     //Start new thread to obtain the answer then add it in below query
