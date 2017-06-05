@@ -367,7 +367,7 @@ public class Crawl_URL {
      */
     public String contentExtract(Document doc,String urlwithhost){
             Elements content_body=null;
-            String content="",author="";
+            String content="";
                     for(String str: post_div){
                         
                                             // Adding content
@@ -377,7 +377,7 @@ public class Crawl_URL {
                                                     for(Element e:content_body)
                                                         {
                                                             if(e.text().length()>0) // Empty body shall not be included
-                                                                content=content+author+":\n\n"+e.text()+"\n____________________________________________________________________________\n";
+                                                                content=content+"\n"+e.text()+"\n____________________________________________________________________________\n";
                                                          }
                                                     
                                                     break;
