@@ -11,8 +11,8 @@
 2) Then run below SQL statements in mysql client :
 
 > create database crawler;
-> use crawler;
-> create table records(id int,question varchar(5000),answer longblob,answer_url varchar(1000));
+use crawler;
+create table records(id int,question varchar(5000),answer longblob,answer_url varchar(1000));
 
 # Screenshots 
 
