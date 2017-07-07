@@ -45,16 +45,7 @@ public class Question_Window extends Application {
     /**
      *
      */
-    public TextArea q1,
-
-    /**
-     *
-     */
-    q2,
-
-    /**
-     *
-     */
+    public TextArea q1,q2,
     q3,
 
     /**

@@ -29,14 +29,7 @@ public class Start_Crawling {
     TextArea progressText;
     static String host;
     
-    /**
-     *
-     * @param jtf
-     * @param pagesCounterText
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws SQLException
-     */
+
     public void start(TextArea jtf,TextArea pagesCounterText) throws IOException, ClassNotFoundException, SQLException{
         
         
@@ -93,6 +86,7 @@ public class Start_Crawling {
         String[] str={turl}; //convert entryURL string to string array
         //generate regex
         Regex_Generate rj=new Regex_Generate(str);
+        
         tp_regex=rj.generateRegex(str); // get the regex
         Platform.runLater(() ->progressText.appendText("\nGenerated Thread Page Regex > "+tp_regex));
         
@@ -113,15 +107,13 @@ public class Start_Crawling {
         rj=new Regex_Generate(str1);
         ip_regex=rj.generateRegex(str1); // get the regex
         Platform.runLater(() ->progressText.appendText("\nGenerated Index Page Regex > "+ip_regex));
-        
+       
         System.out.println("6. Index Regex > "+ip_regex);
 
                 
         //Initialize filter class
         Filter filter_obj=new Filter(ip_regex,tp_regex); //pass regex to filter class
-        
-        
-        
+ 
        // TEST IT **********//Crawl_URL entry_url_obj=new Crawl_URL(progressText,host,filter_obj,pagesCounterText);
 
         
@@ -159,7 +151,6 @@ public class Start_Crawling {
         Crawl_IndexPage crawli=new Crawl_IndexPage(filter_obj,progressText,entry_url_host,index_urls,thread_urls,ip_regex,tp_regex,pagesCounterText);
         crawli.crawl();
 
-        
         
     }
     

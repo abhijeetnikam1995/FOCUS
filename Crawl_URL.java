@@ -18,10 +18,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 /**
  *
  * @author Rakesh
- */
+ * 
+ **/
+
 public class Crawl_URL {
     static int id=1;
     Boolean q_window_start_flag=true; //to make sure question window will be opened only once
