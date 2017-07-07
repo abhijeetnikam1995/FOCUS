@@ -14,7 +14,6 @@
 use crawler;
 create table records(id int,question varchar(5000),answer longblob,answer_url varchar(1000));
 
-# Screenshots 
 
 
 
