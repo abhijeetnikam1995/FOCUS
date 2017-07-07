@@ -10,15 +10,11 @@
 1) Change database server credentials from Crawl_URL.java, Posts_Window.java and Question_Window.java
 2) Then run below SQL statements in mysql client :
 
->create database crawler;
->use crawler;
->create table records(id int,question varchar(5000),answer longblob,answer_url varchar(1000));
+> create database crawler;
+> use crawler;
+> create table records(id int,question varchar(5000),answer longblob,answer_url varchar(1000));
 
 # Screenshots 
 
 
-
-
-# Wanna contribute ?
-Send Pull Requests
 
