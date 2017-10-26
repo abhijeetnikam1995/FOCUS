@@ -1,4 +1,4 @@
- This is a forum crawler that only crawls Index, Thead and Page Flipping URLs using some of methods described in IEEE paper (http://ieeexplore.ieee.org/document/6165295/). However it is not the exact same implementation of the paper. 
+ This is a forum crawler that only crawls Index, Thread and Page Flipping URLs using some of methods described in IEEE paper (http://ieeexplore.ieee.org/document/6165295/). However it is not the exact same implementation of the paper. 
 
 # Currently Supported Forum Softwares : 
  1) phpBB
